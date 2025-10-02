@@ -1,21 +1,69 @@
+from asyncio.base_subprocess import WriteSubprocessPipeProto
+
+
 def carica_da_file(file_path):
     """Carica i libri dal file"""
     # TODO
+    try:
+        input_file = open(file_path, "r")  # May throw exceptions
+        biblioteca = []
+        for line in input_file:
+            biblioteca.append(line.strip().split(","))
+    except FileNotFoundError:
+        print("\nFile not found!")
+        return None
+    input_file.close()
+    print("\nFile caricato con successo!")
+    return biblioteca
 
 
 def aggiungi_libro(biblioteca, titolo, autore, anno, pagine, sezione, file_path):
     """Aggiunge un libro nella biblioteca"""
     # TODO
+    z=0
+    for i in biblioteca:
+        if i[0] == titolo:
+            print("\nTitolo già presente!")
+            return None
+        if i[4] == str(sezione):
+            z=z+1
+    if z==0:
+        print("\nSezione non presente!")
+        return None
 
+    try:
+        output_file = open(file_path, "a")  # May throw exceptions
+        output_file.write(titolo+","+autore+","+str(anno)+","+str(pagine)+","+str(sezione)+"\n")
+    except FileNotFoundError:
+        print("\nFile not found!")
+        return None
+    output_file.close()
+    biblioteca.append([titolo, autore, anno, pagine, sezione])
+    return True
 
 def cerca_libro(biblioteca, titolo):
     """Cerca un libro nella biblioteca dato il titolo"""
     # TODO
+    for i in biblioteca:
+        if i[0] == titolo:
+            return i[0]+", "+i[1]+", "+str(i[2])+", "+str(i[3])+", "+str(i[4])
+    return None
+
 
 
 def elenco_libri_sezione_per_titolo(biblioteca, sezione):
     """Ordina i titoli di una data sezione della biblioteca in ordine alfabetico"""
     # TODO
+    titoli=[]
+    for i in biblioteca:
+        if i[4] == str(sezione):
+            titoli.append(i[0])
+    if len(titoli)==0:
+        print("\nSezione non presente!")
+        return None
+    else:
+        titoli.sort()
+        return titoli
 
 
 def main():
@@ -37,11 +85,12 @@ def main():
                 file_path = input("Inserisci il path del file da caricare: ").strip()
                 biblioteca = carica_da_file(file_path)
                 if biblioteca is not None:
+                    biblioteca.pop(0)
                     break
 
         elif scelta == "2":
             if not biblioteca:
-                print("Prima carica la biblioteca da file.")
+                print("\nPrima carica la biblioteca da file!")
                 continue
 
             titolo = input("Titolo del libro: ").strip()
@@ -51,36 +100,36 @@ def main():
                 pagine = int(input("Numero di pagine: ").strip())
                 sezione = int(input("Sezione: ").strip())
             except ValueError:
-                print("Errore: inserire valori numerici validi per anno, pagine e sezione.")
+                print("\nErrore: inserire valori numerici validi per anno, pagine e sezione!")
                 continue
 
             libro = aggiungi_libro(biblioteca, titolo, autore, anno, pagine, sezione, file_path)
             if libro:
-                print(f"Libro aggiunto con successo!")
+                print(f"\nLibro aggiunto con successo!")
             else:
-                print("Non è stato possibile aggiungere il libro.")
+                print("Non è stato possibile aggiungere il libro!")
 
         elif scelta == "3":
             if not biblioteca:
-                print("La biblioteca è vuota.")
+                print("\nLa biblioteca è vuota!")
                 continue
 
             titolo = input("Inserisci il titolo del libro da cercare: ").strip()
             risultato = cerca_libro(biblioteca, titolo)
             if risultato:
-                print(f"Libro trovato: {risultato}")
+                print(f"\nLibro trovato: {risultato}")
             else:
-                print("Libro non trovato.")
+                print("\nLibro non trovato!")
 
         elif scelta == "4":
             if not biblioteca:
-                print("La biblioteca è vuota.")
+                print("\nLa biblioteca è vuota!")
                 continue
 
             try:
                 sezione = int(input("Inserisci numero della sezione da ordinare: ").strip())
             except ValueError:
-                print("Errore: inserire un valore numerico valido.")
+                print("\nErrore: inserire un valore numerico valido!")
                 continue
 
             titoli = elenco_libri_sezione_per_titolo(biblioteca, sezione)
@@ -89,10 +138,10 @@ def main():
                 print("\n".join([f"- {titolo}" for titolo in titoli]))
 
         elif scelta == "5":
-            print("Uscita dal programma...")
+            print("\nUscita dal programma...")
             break
         else:
-            print("Opzione non valida. Riprova.")
+            print("\nOpzione non valida. Riprova!")
 
 
 if __name__ == "__main__":
