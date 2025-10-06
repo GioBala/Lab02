@@ -2,7 +2,7 @@ def carica_da_file(file_path):
     """Carica i libri dal file"""
     # TODO
     try:
-        input_file = open(file_path, "r")  # May throw exceptions
+        input_file = open(file_path, "r")
         biblioteca = []
         for line in input_file:
             biblioteca.append(line.strip().split(","))
@@ -29,7 +29,7 @@ def aggiungi_libro(biblioteca, titolo, autore, anno, pagine, sezione, file_path)
         return None
 
     try:
-        output_file = open(file_path, "a")  # May throw exceptions
+        output_file = open(file_path, "a")
         output_file.write(titolo+","+autore+","+str(anno)+","+str(pagine)+","+str(sezione)+"\n")
     except FileNotFoundError:
         print("\nFile not found!")
